@@ -5,7 +5,10 @@ class Tasks extends CSV_Model {
         {
                 parent::__construct(APPPATH . '../data/tasks.csv', 'id');
         }
-		
+		function makeCategorizedPanel($tasks) {
+			$parms = ['display_tasks' => $this->tasks->getCategorizedTasks()];
+			return $this->parser->parse('by_category', $parms, true);
+		}
 		function getCategorizedTasks() {
 		// extract the undone tasks
 		foreach ($this->all() as $task){
