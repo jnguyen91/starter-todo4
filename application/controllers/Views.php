@@ -1,9 +1,6 @@
 <?php
-
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class Views extends Application {
-
     public function index() {
         $this->data['pagetitle'] = 'Ordered TODO List';
         $tasks = $this->tasks->all();   // get all the tasks
@@ -12,28 +9,26 @@ class Views extends Application {
         $this->data['rightside'] = $this->makeCategorizedPanel($tasks);
         $this->render('template_secondary');
     }
-
     function makePrioritizedPanel($tasks) {
         // extract the undone tasks
         foreach ($tasks as $task) {
             if ($task->status != 2)
                 $undone[] = $task;
         }
-
         // order them by priority
         usort($undone, "orderByPriority");
-
-
         // substitute the priority name
         foreach ($undone as $task)
             $task->priority = $this->app->priority($task->priority);
-
         // convert the array of task objects into an array of associative objects       
         foreach ($undone as $task)
             $converted[] = (array) $task;
-
         // and then pass them on
         $parms = ['display_tasks' => $converted];
+        //Insert the next two lines
+        $role = $this->session->userdata('userrole');
+        $parms['completer'] = ($role == 'ROLE_OWNER') ? '/views/complete' : '#';
+
         return $this->parser->parse('by_priority', $parms, true);
     }
 
@@ -42,8 +37,19 @@ class Views extends Application {
         return $this->parser->parse('by_category', $parms, true);
     }
 
+// complete flagged items
+function complete() {
+        // loop over the post fields, looking for flagged tasks
+        foreach($this->input->post() as $key=>$value) {
+                if (substr($key,0,4) == 'task') {
+                        // find the associated task
+                        // MORE COMING HERE
+                }
+        }
+        $this->index();
 }
 
+}
 // return -1, 0, or 1 of $a's priority is higher, equal to, or lower than $b's
 function orderByPriority($a, $b) {
     if ($a->priority > $b->priority)
