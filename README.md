@@ -1,5 +1,5 @@
-# starter-todo
-Starter project for COMP4711 lab 5, Fall 2017
+# Lab6
+COMP4711 lab 6, Fall 2017
+Steven Orola, Jeffrey Nguyen
 
-It "works" out of the box, sort of, but needs beefing up :(
-Your job is to fix it, per lab 5 directions :)
+Building out our TODO list manager

@@ -1,6 +1,9 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Views extends Application {
+
     public function index() {
         $this->data['pagetitle'] = 'Ordered TODO List';
         $tasks = $this->tasks->all();   // get all the tasks
@@ -9,7 +12,9 @@ class Views extends Application {
         $this->data['rightside'] = $this->makeCategorizedPanel($tasks);
         $this->render('template_secondary');
     }
+
     function makePrioritizedPanel($tasks) {
+        $parms = ['display_tasks' => []];
         // extract the undone tasks
         foreach ($tasks as $task) {
             if ($task->status != 2)
@@ -37,25 +42,27 @@ class Views extends Application {
         return $this->parser->parse('by_category', $parms, true);
     }
 
-// complete flagged items
-function complete() {
-    $role = $this->session->userdata('userrole');
-    if ($role != ROLE_OWNER) redirect('/work');
+    // complete flagged items
+    function complete() {
+        $role = $this->session->userdata('userrole');
+        if ($role != ROLE_OWNER)
+            redirect('/work');
 
-    // loop over the post fields, looking for flagged tasks
-    foreach($this->input->post() as $key=>$value) {
-        if (substr($key,0,4) == 'task') {
-            // find the associated task
-            $taskid = substr($key,4);
-            $task = $this->tasks->get($taskid);
-            $task->status = 2; // complete
-            $this->tasks->update($task);
+        // loop over the post fields, looking for flagged tasks
+        foreach ($this->input->post() as $key => $value) {
+            if (substr($key, 0, 4) == 'task') {
+                // find the associated task
+                $taskid = substr($key, 4);
+                $task = $this->tasks->get($taskid);
+                $task->status = 2; // complete
+                $this->tasks->update($task);
+            }
         }
+        $this->index();
     }
-    $this->index();
-}
 
 }
+
 // return -1, 0, or 1 of $a's priority is higher, equal to, or lower than $b's
 function orderByPriority($a, $b) {
     if ($a->priority > $b->priority)
