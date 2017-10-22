@@ -5,6 +5,7 @@
             <th>Id</th>
             <th></th>   <!-- INSERT this line -->
             <th>Task</th>
+            <th>Priority</th>
         </tr>
         {display_tasks}
         <tr>
